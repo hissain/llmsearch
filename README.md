@@ -1,6 +1,6 @@
-# Article Summarization with LangChain Tools
+# Article summarization and citation with LangChain Tools
 
-This repository provides a toolset for summarizing articles on a given topic, utilizing various LangChain tools such as DuckDuckGo, Wikipedia, YouTube, and ArXiv, all backed by powerful Language Models (LLMs). The goal is to offer an efficient way to gather and summarize content from multiple sources, streamlining information gathering and enhancing productivity.
+This repository provides a toolset for summarizing or citing articles on a given topic, utilizing various LangChain tools such as DuckDuckGo, Wikipedia, YouTube, and ArXiv, all backed by powerful Language Models (LLMs). The goal is to offer an efficient way to gather and summarize content from multiple sources, streamlining information gathering and enhancing productivity.
 
 ## Features
 
