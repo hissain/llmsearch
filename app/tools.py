@@ -20,15 +20,15 @@ llm = ChatGoogleGenerativeAI(
 # Reference creation function
 def create_reference(publications: str) -> str:
     prompt_extract = (
-        "You are an assistant tasked with creating IEEE styled references for citation from provided publications. "
-        "Now, please generate IEEE bibliography styled references for the following publications.\n\n"
+        "You are an assistant tasked with extracting standard BibTeX styled references for citation from provided publications or publication references. "
+        "Perform your task for following publications,\n\n"
         "Publications: {publications}"
     )
 
     prompt = PromptTemplate.from_template(prompt_extract)
     chain = prompt | llm
     processed_chunks = []
-    chunks = chunkify(publications, 2000)
+    chunks = chunkify(publications, 3000)
     for chunk in chunks:
         result = chain.invoke({"publications": chunk})
         processed_chunks.append(result.content)
@@ -40,11 +40,11 @@ tools = [
     Tool(
         name="Semantic Scholar Search",
         func=semantic_scholar.run,
-        description="Useful for retrieving academic references, citations, and publications.",
+        description="Useful for retrieving academic references, citations for publications in BibTeX style.",
     ),
     Tool(
-        name="Reference Creator",
-        description="Create IEEE conventional reference for citation from a list of academic publications.",
+        name="Reference Extractor",
+        description="Extract standard BibTeX styled reference from given publications or publication references.",
         func=create_reference
     )
 ]
