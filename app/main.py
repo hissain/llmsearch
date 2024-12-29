@@ -7,6 +7,8 @@ from langchain_community.tools.semanticscholar.tool import SemanticScholarAPIWra
 from langchain_core.prompts import PromptTemplate
 from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain.agents import initialize_agent, AgentType
+import time
+from fastapi.background import BackgroundTasks
 
 load_dotenv()
 os.environ["UVLOOP_DISABLE"] = "1"
@@ -74,7 +76,7 @@ reference_tool = Tool(
     description="Create IEEE conventional reference for citation from a list of academic publications.",
     func=create_reference
 )
-tools.append(reference_tool)
+#tools.append(reference_tool)
 
 # Initialize agent
 agent = initialize_agent(
@@ -142,16 +144,55 @@ async def home():
                 button:hover {
                     background-color: #0057a0;
                 }
+                .loader {
+                    border: 8px solid #f3f3f3;
+                    border-top: 8px solid #3498db;
+                    border-radius: 50%;
+                    width: 50px;
+                    height: 50px;
+                    animation: spin 2s linear infinite;
+                    margin: 20px 0;
+                }
+                @keyframes spin {
+                    0% { transform: rotate(0deg); }
+                    100% { transform: rotate(360deg); }
+                }
             </style>
+            <script>
+                function showLoader() {
+                    document.getElementById('loader').style.display = 'block';
+                    document.getElementById('output').style.display = 'none';
+                }
+
+                function hideLoader(result) {
+                    document.getElementById('loader').style.display = 'none';
+                    document.getElementById('output').style.display = 'block';
+                    document.getElementById('output').innerHTML = result;
+                }
+            </script>
         </head>
         <body>
             <div class="container">
                 <h1>Research References Chatbot</h1>
-                <form action="/get_references/" method="get">
-                    <input type="text" name="title" placeholder="Enter Research Title" required>
+                <form id="researchForm">
+                    <input type="text" name="title" id="title" placeholder="Enter Research Title" required>
                     <button type="submit">Get References</button>
                 </form>
+                <div id="loader" class="loader" style="display: none;"></div>
+                <div id="output" style="display: none;"></div>
             </div>
+            <script>
+                document.getElementById('researchForm').addEventListener('submit', async function(event) {
+                    event.preventDefault();
+                    const title = document.getElementById('title').value;
+                    showLoader();
+
+                    const response = await fetch(`/get_references/?title=${title}`);
+                    const result = await response.text();
+
+                    hideLoader(result);
+                });
+            </script>
         </body>
     </html>
     """
@@ -162,13 +203,8 @@ async def get_references(title: str, request: Request):
     # Initialize chat history
     chat_history = []
     
-    # Query the agent
-    user_input = f"Find related publications for: {title}. Then create references from the publications found."
-    response = agent.run(input=user_input, chat_history=chat_history)
-    chat_history.append(("User: " + user_input, "Agent: " + response))
-    
-    # Return the chat response (styled as a chat interface)
-    return f"""
+    # Show progress while waiting for results
+    loading_page = """
     <html>
         <head>
             <title>Research References Chatbot</title>
@@ -188,8 +224,70 @@ async def get_references(title: str, request: Request):
                     padding: 40px;
                     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
                     border-radius: 8px;
-                    width: 60%;
-                    max-width: 600px;
+                    width: 80%;
+                    max-width: 700px;
+                }}
+                h1 {{
+                    color: #333;
+                    font-size: 32px;
+                    margin-bottom: 20px;
+                }}
+                .loader {{
+                    border: 8px solid #f3f3f3;
+                    border-top: 8px solid #3498db;
+                    border-radius: 50%;
+                    width: 50px;
+                    height: 50px;
+                    animation: spin 2s linear infinite;
+                    margin: 20px 0;
+                }}
+                @keyframes spin {{
+                    0% {{ transform: rotate(0deg); }}
+                    100% {{ transform: rotate(360deg); }}
+                }}
+            </style>
+        </head>
+        <body>
+            <div class="container">
+                <h1>Research References Chatbot</h1>
+                <div class="loader"></div>
+                <p>Please wait while we fetch the results...</p>
+            </div>
+        </body>
+    </html>
+    """
+
+    # Return loading page first
+    response = HTMLResponse(content=loading_page)
+
+    # Query the agent after displaying the loading page
+    user_input = f"Find related publications for: {title}. Then create references from the publications found."
+    response_text = agent.run(input=user_input, chat_history=chat_history)
+    chat_history.append(("User: " + user_input, "Agent: " + response_text))
+
+    # Markdown rendering using basic HTML tags
+    markdown_output = f"""
+    <html>
+        <head>
+            <title>Research References Chatbot</title>
+            <style>
+                body {{
+                    font-family: Arial, sans-serif;
+                    background-color: #f4f4f9;
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    height: 90vh;
+                    margin: 0;
+                }}
+                .container {{
+                    text-align: center;
+                    background-color: #ffffff;
+                    padding: 40px;
+                    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+                    border-radius: 8px;
+                    width: 80%;
+                    max-width: 700px;
                 }}
                 h1 {{
                     color: #333;
@@ -205,6 +303,7 @@ async def get_references(title: str, request: Request):
                     overflow-y: scroll;
                     background-color: #f9f9f9;
                     border-radius: 8px;
+                    text-align: left;
                 }}
                 .msg-container {{
                     margin-bottom: 10px;
@@ -212,19 +311,11 @@ async def get_references(title: str, request: Request):
                 .user-msg {{
                     color: #333;
                     font-weight: bold;
+                    text-align: left;
                 }}
                 .agent-msg {{
                     color: #0066cc;
-                }}
-                a {{
-                    display: inline-block;
-                    margin-top: 20px;
-                    font-size: 18px;
-                    text-decoration: none;
-                    color: #0066cc;
-                }}
-                a:hover {{
-                    text-decoration: underline;
+                    text-align: left;
                 }}
             </style>
         </head>
@@ -234,11 +325,12 @@ async def get_references(title: str, request: Request):
                 <div class="chat-box">
                     <div class="msg-container">
                         <p class="user-msg">User: {user_input}</p>
-                        <p class="agent-msg">Agent: {response}</p>
+                        <pre class="agent-msg">{response_text}</pre>
                     </div>
                 </div>
-                <a href="/">Back to Home</a>
             </div>
         </body>
     </html>
     """
+
+    return HTMLResponse(content=markdown_output)
