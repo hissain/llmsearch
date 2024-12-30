@@ -4,11 +4,11 @@
 This repository provides a streamlined solution for performing patent similarity searches by leveraging the capabilities of Language Learning Models (LLMs) and Retrieval-Augmented Generation (RAG). The application integrates advanced tools such as Google Patent Database, DuckDuckGo search, and cutting-edge models like Google's Gemini (via Generative AI API) to generate keywords, build queries, and parse results efficiently.
 
 ### Features
-**Keyword Generation:** Generate relevant and diverse keywords for patent searches.
-**Query Optimization:** Create advanced search queries using Boolean and proximity operators for maximum recall and precision.
-**Web Search Integration:** Seamlessly search patent data from Google Patents using DuckDuckGo API.
-**Result Parsing:** Extract, parse, and display search results in a user-friendly DataFrame.
-**Streamlit App:** A professional, interactive web application for patent similarity searches, inspired by Google Patents' interface.
+- **Keyword Generation:** Generate relevant and diverse keywords for patent searches.
+- **Query Optimization:** Create advanced search queries using Boolean and proximity operators for maximum recall and precision.
+- **Web Search Integration:** Seamlessly search patent data from Google Patents using DuckDuckGo API.
+- **Result Parsing:** Extract, parse, and display search results in a user-friendly DataFrame.
+- **Streamlit App:** A professional, interactive web application for patent similarity searches, inspired by Google Patents' interface.
 
 ### Installation
 Clone the repository:
