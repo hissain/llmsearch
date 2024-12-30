@@ -46,6 +46,12 @@ streamlit run app.py
 3. View auto-generated keywords, queries, and search results.
 4. Analyze the search results in a clean and structured interface.
 
+### Screenshots of the App
+![Idea](resources/Screenshot_patent1.png)
+![Keywords](resources/Screenshot_patent2.png)
+![Query String](resources/Screenshot_patent3.png)
+![Results](resources/Screenshot_patent4.png)
+
 ### Project Structure
 
 ```bash
