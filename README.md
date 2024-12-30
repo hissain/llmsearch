@@ -1,47 +1,76 @@
-# Article summarization and citation with LangChain Tools
+# 1. Patent Prior Art Search with LLMs and DDGS (DuckDuckGo) 
+./app_patent
+  
+This repository provides a streamlined solution for performing patent similarity searches by leveraging the capabilities of Language Learning Models (LLMs) and Retrieval-Augmented Generation (RAG). The application integrates advanced tools such as Google Patent Database, DuckDuckGo search, and cutting-edge models like Google's Gemini (via Generative AI API) to generate keywords, build queries, and parse results efficiently.
 
-This repository provides a toolset for summarizing or citing articles on a given topic, utilizing various LangChain tools such as DuckDuckGo, Wikipedia, YouTube, and ArXiv, all backed by powerful Language Models (LLMs). The goal is to offer an efficient way to gather and summarize content from multiple sources, streamlining information gathering and enhancing productivity.
+### Features
+**Keyword Generation:** Generate relevant and diverse keywords for patent searches.
+**Query Optimization:** Create advanced search queries using Boolean and proximity operators for maximum recall and precision.
+**Web Search Integration:** Seamlessly search patent data from Google Patents using DuckDuckGo API.
+**Result Parsing:** Extract, parse, and display search results in a user-friendly DataFrame.
+**Streamlit App:** A professional, interactive web application for patent similarity searches, inspired by Google Patents' interface.
 
-## Features
-
-- **DuckDuckGo**: Search and summarize articles from web search results.
-- **Wikipedia**: Fetch and summarize articles directly from Wikipedia.
-- **YouTube**: Summarize videos and their transcripts for easy consumption.
-- **ArXiv**: Summarize scientific papers and research articles from ArXiv.
-
-## Requirements
-
-Before using this repository, ensure you have the following dependencies installed:
-
-- Python 3.11 (Should also work for other versions)
-- Dependency pacckages
-You can install the required dependencies via `pip`:
-```
-pip install -r app/requirements.txt
+### Installation
+Clone the repository:
+```bash
+git clone https://github.com/hissain/llmsearch.git
+cd llmsearch/app_patent
 ```
 
-Or installing following packages should work fine in venv
-```
-pip install semanticscholar
-pip install langchain-community
-pip install uvicorn
-pip install fastapi
-pip install langchain-ollama
-pip install langchain-google-genai
-```
+Install the required dependencies:
 
-## Running the app
-```
-uvicorn app:app --reload
+```bash
+langchain==0.0.213
+duckduckgo-search==0.5
+streamlit==1.24.0
+pandas==2.1.0
+openai==0.27.0
+google-cloud==3.0.0
+langchain-google-genai==0.0.1
+requests==2.28.1
 ```
 
-## Disclaimer
-This repository and its tools are for educational purposes only. While every effort has been made to ensure the accuracy and quality of the summaries, they may not always be fully accurate or complete. Users are encouraged to cross-reference information and use it at their own discretion. The APIs and tools used in this repository rely on third-party services (e.g., DuckDuckGo, Wikipedia, YouTube, ArXiv), which may have limitations, terms of use, or changes that could affect the functionality of the summarization process.
+### Set up the necessary API keys:
 
-We do not take any responsibility for any errors, inaccuracies, or issues arising from the use of the tools or the summarized content. By using this repository, you agree to comply with the terms of service of the respective third-party services.
+**Google Gemini API:** Add your Google Gemini API key as an environment variable **GEMINI_API_KEY**.
 
-## License
-This repository is licensed under the MIT License. See the LICENSE file for more details.
+### Run the Streamlit app:
 
-## Contributing
-Contributions are welcome! Feel free to fork the repository and submit issues and pull requests. If you encounter any bugs or have feature requests, please open an issue, and we will try to address them promptly.
+```bash
+streamlit run app.py
+```
+
+### Usage
+1. Open the Streamlit app.
+2. Enter your patent description in the provided text area.
+3. View auto-generated keywords, queries, and search results.
+4. Analyze the search results in a clean and structured interface.
+
+### Project Structure
+
+```bash
+patent-similarity-search/
+├── app.py                 # Streamlit app entry point
+├── main.py                # Core logic for keyword/query generation and searching
+├── prompts.py             # Prompt templates for keyword and query generation
+├── requirements.txt       # Required Python libraries
+└── README.md              # Project documentation
+```
+
+### Disclaimer
+This tool is designed for informational purposes only. It is not intended to replace professional patent searches or legal consultations. While the system uses advanced models and APIs to ensure the relevance of search results, the outputs may not always be exhaustive or accurate. The system relies on public search APIs like DuckDuckGo and Google Patents. Any restrictions or inaccuracies in these APIs will affect the results. Ensure compliance with local regulations and ethical considerations while using this tool. Do not misuse it for infringing upon intellectual property rights. Using APIs such as DuckDuckGo or Google Gemini may be subject to rate limits or usage restrictions based on their respective policies.
+
+### Future Improvements
+1. Integration with Semantic Scholar for academic references.
+2. Enhanced LLM fine-tuning for industry-specific searches.
+3. Real-time result clustering and visualization.
+
+### License
+This project is licensed under the MIT License. See the LICENSE file for details.
+
+### Acknowledgments
+- LangChain for providing robust tools for RAG workflows.
+- DuckDuckGo Search API for seamless web search integration.
+- Google Gemini API for state-of-the-art LLM capabilities.
+
+Feel free to customize it further to reflect specific nuances of your project.
