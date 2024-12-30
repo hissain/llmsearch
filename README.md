@@ -13,16 +13,27 @@ This repository provides a toolset for summarizing or citing articles on a given
 
 Before using this repository, ensure you have the following dependencies installed:
 
-- Python 3.x
-- LangChain
-- Requests
-- BeautifulSoup
-- DuckDuckGo API (for DuckDuck)
-- Wikipedia API (for Wikipedia)
-- YouTube API (for YouTube)
-- ArXiv API (for ArXiv)
-
+- Python 3.11 (Should also work for other versions)
+- Dependency pacckages
 You can install the required dependencies via `pip`:
+```
+pip install -r app/requirements.txt
+```
+
+Or installing following packages should work fine in venv
+```
+pip install semanticscholar
+pip install langchain-community
+pip install uvicorn
+pip install fastapi
+pip install langchain-ollama
+pip install langchain-google-genai
+```
+
+## Running the app
+```
+uvicorn app:app --reload
+```
 
 ## Disclaimer
 This repository and its tools are for educational purposes only. While every effort has been made to ensure the accuracy and quality of the summaries, they may not always be fully accurate or complete. Users are encouraged to cross-reference information and use it at their own discretion. The APIs and tools used in this repository rely on third-party services (e.g., DuckDuckGo, Wikipedia, YouTube, ArXiv), which may have limitations, terms of use, or changes that could affect the functionality of the summarization process.
