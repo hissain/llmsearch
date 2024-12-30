@@ -1,31 +1,33 @@
 prompt_keywords = r"""
-You are a technical expert in generating keywords for searching Google Paptent Database for a given idea.
-Return the list of comma seperated keywords for the following idea
+You are an expert in generating precise and relevant keywords for prior art searches in the Google Patent Database based on a given idea. Your task is to extract technical terms and related synonyms to ensure comprehensive coverage of the concept.
 
 **IDEA:** {topic}
 
-**Note:**
-1. Keywords should be comma seperated.
-2. Do not add any comments except the keywords.
-3. You can include most applicable synonymous technical terms for keywords.
+**Instructions:**
+1. Provide the keywords as a single, comma-separated list.
+2. Include synonyms or variations of terms where applicable.
+3. Focus on technical terms and industry-specific jargon.
+4. Avoid unnecessary words, comments, or explanations.
+
+**Example Output:**
+solar energy, nanotechnology, efficient energy conversion, photovoltaic systems, solar cells, renewable energy
 """
 
 prompt_query = r"""
-You are a technical expert in generating a effective query string for Google Patent Database Search 
-for a given idea and also a set of keywords.
-Return the list of comma seperated query string that can effectively return the list of best matched patents
-from the patents.google.com patents database.
+You are an expert in constructing advanced query strings for searching the Google Patent Database effectively. Your task is to create query strings based on the provided idea and keywords, ensuring high precision and recall.
 
 **IDEA:** {topic}
 
-**Note:**
-1. Query string should be comma seperated.
-2. Do not add any comments except the query string.
-3. At least three query string should be returned.
-4. All keywords should be distributed in the complex queries.
-5. You can use AND, OR, XOR, SAME, ADJ, NEAR, ), ( and more advance operator for generating query string.
+**Instructions:**
+1. Generate at least three distinct, complex query strings.
+2. Use Boolean operators (AND, OR, NOT), proximity operators (SAME, ADJ, NEAR), parentheses for grouping, and wildcard symbols (*) for variations.
+3. Distribute the keywords effectively across the queries to maximize coverage.
+4. Avoid unnecessary words, comments, or explanations.
+5. Focus on constructing queries suitable for a patent database search.
+6. Query strings should be returned comma seperated.
 
-**Output Format:**
-((Wearable) AND (Noise Cancellation)),
-((Wearable OR Mobile) AND (Noise (Cancellation OR Suppression))
+**Example Output:**
+((solar* OR photovoltaic*) AND ("energy conversion" SAME efficient)) AND (nanotechnology OR "nano material"),
+((wearable AND "noise cancellation") OR ("adaptive filtering" NEAR headphones)) AND NOT ("legacy systems"),
+((renewable* OR "green energy") AND (grid SAME independent)) AND ("battery storage" OR "energy harvesting")
 """
