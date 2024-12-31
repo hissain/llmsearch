@@ -55,11 +55,10 @@ streamlit run app.py
 ### Project Structure
 
 ```bash
-patent-similarity-search/
+llmsearch/app_patent
 ├── app.py                 # Streamlit app entry point
 ├── main.py                # Core logic for keyword/query generation and searching
-├── prompts.py             # Prompt templates for keyword and query generation
-├── requirements.txt       # Required Python libraries
+├── prompts.py             # Prompttemplates for keyword and query
 └── README.md              # Project documentation
 ```
 
