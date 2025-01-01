@@ -45,7 +45,9 @@ def parse_results_to_dataframe(results):
         }
         for result in results
     ]
-    return pd.DataFrame(data)
+    df = pd.DataFrame(data)
+    df_filtered = df[df['URL'].str.startswith('https://patents.google.com/patent/')]
+    return df_filtered
 
 def search_prior_art(queries):
     full_result = []
