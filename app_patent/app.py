@@ -50,7 +50,7 @@ def parse_results_to_dataframe(results):
 def search_prior_art(queries):
     full_result = []
     for query in queries:
-        full_query = f"https://patents.google.com?q={query}"
+        full_query = f"site:patents.google.com {query}"
         results = search_duckduckgo(full_query)
         full_result.extend(results)
         time.sleep(2)
