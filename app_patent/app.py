@@ -32,7 +32,7 @@ def generate_queries(topic, keywords):
     return queries
 
 def search_duckduckgo(query):
-    with DDGS() as ddgs:
+    with DDGS(verify=False) as ddgs:
         results = ddgs.text(query, max_results=10)
     return results
 
