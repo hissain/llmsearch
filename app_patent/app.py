@@ -19,29 +19,35 @@ def log_message(message):
     logging.info(message)
     st.write(message)
 
-def get_model():
-
-    if llm_engine in "Gemini":
+def get_model(llm_engine, llm_model_name=None):
+    if llm_engine == "Gemini":
         return ChatGoogleGenerativeAI(
             model="gemini-pro",
             google_api_key=os.getenv('GEMINI_API_KEY'),
-            temperature=0.1)
-    else:
+            temperature=0.1
+        )
+    elif llm_engine == "Local Ollama":
         return OllamaLLM(model=llm_model_name)
 
-llm = OllamaLLM(model="llama3")
+def get_content(result, llm_engine):
+    if llm_engine == "Gemini":
+        return result.content.split(',')
+    else:
+        return result.split(',')
 
-def generate_keywords(topic):
+def generate_keywords(topic, llm_engine, llm_model_name):
     prompt = PromptTemplate.from_template(prompt_keywords)
-    chain = prompt | get_model()
+    llm = get_model(llm_engine, llm_model_name)
+    chain = prompt | llm
     result = chain.invoke({"topic": topic})
-    return [keyword.strip() for keyword in result.content.split(',')]
+    return [keyword.strip() for keyword in get_content(result, llm_engine)]
 
-def generate_queries(topic, keywords):
+def generate_queries(topic, keywords, llm_engine, llm_model_name):
     prompt = PromptTemplate.from_template(prompt_query)
-    chain = prompt | get_model()
+    llm = get_model(llm_engine, llm_model_name)
+    chain = prompt | llm
     result = chain.invoke({"topic": topic, "keywords": keywords})
-    return [q.strip() for q in result.content.split(',')]
+    return [q.strip() for q in get_content(result, llm_engine)]
 
 def search_duckduckgo(query, max_results=10):
     with DDGS(verify=False) as ddgs:
@@ -94,12 +100,13 @@ search_engine = st.sidebar.radio("Select Search Engine", options=['google', 'duc
 llm_engine = st.sidebar.radio("Select LLM Type", options=['Gemini', 'Local Ollama'], index=0)
 
 if llm_engine == 'Gemini':
+    llm_model_name = ""
     api_key_input = st.sidebar.text_input("Google Gemini API Key", type="password")
+    if api_key_input and api_key_input != os.getenv('GEMINI_API_KEY'):
+        os.environ['GEMINI_API_KEY'] = api_key_input
 elif llm_engine == 'Local Ollama':
     llm_model_name = st.sidebar.text_input("Ollama Model Name", value="llama3.2:latest")
-
-if api_key_input and api_key_input != os.getenv('GEMINI_API_KEY'):
-    os.environ['GEMINI_API_KEY'] = api_key_input
+    api_key_input = ""
 
 if st.button("Search for Patents"):
     if not topic.strip():
@@ -107,12 +114,12 @@ if st.button("Search for Patents"):
     else:
         try:
             st.info("Generating keywords...")
-            keywords = generate_keywords(topic)
+            keywords = generate_keywords(topic, llm_engine, llm_model_name)
             st.success("Keywords generated successfully!")
             st.write(keywords)
 
             st.info("Generating search queries...")
-            queries = generate_queries(topic, keywords)
+            queries = generate_queries(topic, keywords, llm_engine, llm_model_name)
             st.success("Queries generated successfully!")
             st.write(queries)
 
