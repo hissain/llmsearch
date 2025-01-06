@@ -11,6 +11,8 @@ from langchain_core.prompts import PromptTemplate
 from dotenv import load_dotenv
 from langchain_ollama import OllamaLLM
 
+os.environ['GOOGLE_METADATA_DISABLED'] = 'true'
+
 load_dotenv()
 
 logging.basicConfig(level=logging.INFO)
